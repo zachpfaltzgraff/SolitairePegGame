@@ -1,3 +1,8 @@
+/*
+    TODO: fix the hovering of when a boardLogic[][] spot is set equal to 0
+ */
+
+
 package com.example.solitairepeggame;
 
 import javafx.application.Application;
@@ -8,7 +13,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -31,6 +40,16 @@ public class SolitairePegGame extends Application {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
 
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+
+        Text titleText = new Text("Solitare Peg Game");
+        titleText.setFont(Font.font("Open Sans", FontWeight.BOLD, 32));
+
+        Text instructionText = new Text("Choose Starting Peg");
+        instructionText.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+        vbox.getChildren().add(titleText);
+        vbox.getChildren().add(instructionText);
 
         for (int i = 0; i < 5; i++) {
             board[i] = new Button[i + 1];
@@ -69,25 +88,19 @@ public class SolitairePegGame extends Application {
                 });
 
                 // for playing of the game
+                int row = i;
+                int col = k;
                 button.setOnAction(e -> {
-                    if (!gameStarted[0]) { // choose starting peg
-
-                        gameStarted[0] = true;
-                    }
-                    else {
-
-
-
-
-
-                    }
+                    handleButtonClick(row, col, emptyPegView, instructionText);
                 });
             }
 
             grid.add(rowWrapper, 0, i);
         }
 
-        Scene scene = new Scene(grid, 800, 600);
+        vbox.getChildren().add(grid);
+
+        Scene scene = new Scene(vbox, 800, 600);
         stage.setTitle("Solitaire Peg Game");
         stage.setScene(scene);
         stage.show();
@@ -106,6 +119,18 @@ public class SolitairePegGame extends Application {
         imageView.setClip(clip);
 
         return imageView;
+    }
+
+    private void handleButtonClick(int row, int col, ImageView emptyPegView, Text instructionText) {
+        if (!gameStarted[0]) {
+            instructionText.setText("");
+            board[row][col].setGraphic(emptyPegView);
+            boardLogic[row][col] = 0;
+            gameStarted[0] = true;
+        }
+        else { // play game
+
+        }
     }
 
     public static void main(String[] args) {
