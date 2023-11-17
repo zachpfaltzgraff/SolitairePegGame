@@ -2,13 +2,11 @@
     TODO: fix the hovering of when a boardLogic[][] spot is set equal to 0
  */
 
-
 package com.example.solitairepeggame;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -24,14 +22,7 @@ import java.io.IOException;
 
 public class SolitairePegGame extends Application {
 
-    private final Button[][] board = new Button[5][];
-
-    /*
-        boardLogic:
-            1 = full
-            0 = empty
-     */
-    private final int[][] boardLogic = new int[5][];
+    private final Peg[][] board = new Peg[5][];
 
     private final boolean[] gameStarted = {false};
 
@@ -52,8 +43,7 @@ public class SolitairePegGame extends Application {
         vbox.getChildren().add(instructionText);
 
         for (int i = 0; i < 5; i++) {
-            board[i] = new Button[i + 1];
-            boardLogic[i] = new int[i+1];
+            board[i] = new Peg[i + 1];
 
             HBox rowWrapper = new HBox();
             rowWrapper.setAlignment(Pos.CENTER);
@@ -68,30 +58,33 @@ public class SolitairePegGame extends Application {
                 Image emptyPeg = new Image("file:sprites/greyButton.jpeg");
                 ImageView emptyPegView = createCircleImageView(emptyPeg);
 
-                Button button = new Button("");
-                button.setGraphic(occupiedPegView);
-                button.setBackground(null);
-                button.setShape(new Circle(50));
-                button.setMaxSize(100, 100);
+                Peg peg = new Peg(i, k);
+                peg.setGraphic(occupiedPegView);
+                peg.setBackground(null);
+                peg.setShape(new Circle(50));
+                peg.setMaxSize(100, 100);
 
-                rowWrapper.getChildren().add(button);
+                rowWrapper.getChildren().add(peg);
 
-                board[i][k] = button;
-                boardLogic[i][k] = 1;
+                board[i][k] = peg;
 
                 // for hovering
-                button.setOnMouseEntered(e -> {
-                    button.setGraphic(hoverImage);
+                peg.setOnMouseEntered(e -> {
+                    if(peg.isOccupied()) {
+                        peg.setGraphic(hoverImage);
+                    }
                 });
-                button.setOnMouseExited(e -> {
-                    button.setGraphic(occupiedPegView);
+                peg.setOnMouseExited(e -> {
+                    if(peg.isOccupied()) {
+                        peg.setGraphic(occupiedPegView);
+                    }
                 });
 
                 // for playing of the game
                 int row = i;
                 int col = k;
-                button.setOnAction(e -> {
-                    handleButtonClick(row, col, emptyPegView, instructionText);
+                peg.setOnAction(e -> {
+                    handlePegClick(row, col, emptyPegView, instructionText);
                 });
             }
 
@@ -106,9 +99,6 @@ public class SolitairePegGame extends Application {
         stage.show();
     }
 
-    /*
-        This method takes in the image and then makes it into a circle
-     */
     private ImageView createCircleImageView(Image image) {
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(100);
@@ -121,11 +111,11 @@ public class SolitairePegGame extends Application {
         return imageView;
     }
 
-    private void handleButtonClick(int row, int col, ImageView emptyPegView, Text instructionText) {
+    private void handlePegClick(int row, int col, ImageView emptyPegView, Text instructionText) {
         if (!gameStarted[0]) {
             instructionText.setText("");
             board[row][col].setGraphic(emptyPegView);
-            boardLogic[row][col] = 0;
+            board[row][col].setOccupied(false);
             gameStarted[0] = true;
         }
         else { // play game
