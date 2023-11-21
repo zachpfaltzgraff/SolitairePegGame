@@ -6,6 +6,7 @@ public class Peg extends Button {
     private int i;
     private int k;
     private boolean occupied;
+
     public Peg() {
         super();
     }
