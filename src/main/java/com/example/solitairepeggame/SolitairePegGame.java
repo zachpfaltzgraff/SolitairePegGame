@@ -101,7 +101,6 @@
             stage.show();
         }
 
-
         /**
          * This method is in charge of making the images into circles
          *
@@ -119,7 +118,6 @@
 
             return imageView;
         }
-
 
         /**
          * This method handles the peg click, it has an if else statement that decides
@@ -197,7 +195,7 @@
             return false;
         }
         private boolean checkUpLeftJump(Peg peg) { // up and to the left
-            if (peg.getI() - 2 >= 0 && peg.getK() - 2 > board[peg.getI() - 2].length) {
+            if (peg.getI() - 2 >= 0 && peg.getK() - 2 >= 0) {
                 if(board[peg.getI() - 1][peg.getK() - 1].isOccupied()) {
                     if (!board[peg.getI() - 2][peg.getK() - 2].isOccupied()) {
                         return true;
@@ -227,7 +225,7 @@
             return false;
         }
         private boolean checkLeftJump(Peg peg) {
-            if (peg.getK() - 2 >= 0) {
+            if (peg.getK() - 2 >= board[peg.getI()].length) {
                 if (board[peg.getI()][peg.getK() - 1].isOccupied()) {
                     if (!board[peg.getI()][peg.getK() - 2].isOccupied()) {
                         return true;
@@ -237,7 +235,7 @@
             return false;
         }
         private boolean checkRightJump(Peg peg) {
-            if (peg.getK() + 2 < 5) {
+            if (peg.getK() + 2 < board[peg.getI()].length) {
                 if (board[peg.getI()][peg.getK() + 1].isOccupied()) {
                     if (!board[peg.getI()][peg.getK() + 2].isOccupied()) {
                         return true;
