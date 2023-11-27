@@ -1,5 +1,11 @@
     /*
-        TODO: fix the highlightPossibleMoves() and the check for in bounds
+        TODO:
+            create all 6 directions inside of highlightMoves() & new methods for each
+            fix how the images are being handled (weird)
+            possibly have a which turn variable..?
+                variable to tell whether you highlight a peg or remove it, not sure how
+                    to handle this yet
+                could be boolean or integer and use % 2
      */
 
     package com.example.solitairepeggame;
@@ -35,7 +41,7 @@
             VBox vbox = new VBox();
             vbox.setAlignment(Pos.CENTER);
 
-            Text titleText = new Text("Solitare Peg Game");
+            Text titleText = new Text("Solitaire Peg Game");
             titleText.setFont(Font.font("Open Sans", FontWeight.BOLD, 32));
 
             instructionText.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
@@ -97,6 +103,13 @@
             stage.show();
         }
 
+
+        /**
+         * This method is in charge of making the images into circles
+         *
+         * @param image the image we want to make a circle
+         * @return the circular image
+         */
         private ImageView createCircleImageView(Image image) {
             ImageView imageView = new ImageView(image);
             imageView.setFitWidth(100);
@@ -109,6 +122,18 @@
             return imageView;
         }
 
+
+        /**
+         * This method handles the peg click, it has an if else statement that decides
+         * if the game has started or not depending on if the user has chosen a starting peg
+         *      if it hasn't been chosen, you make the peg occupied unoccupied
+         *      if it has been chosen, is highlights the moves, & TODO finish this
+         *
+         * @param peg the peg that was clicked
+         * @param emptyView ImageView for if the peg is empty
+         * @param occupiedView ImageView for if the peg is occupied
+         * @param hoverView ImageView for if the peg is being hovered
+         */
         private void handlePegClick(Peg peg, ImageView emptyView, ImageView occupiedView, ImageView hoverView) {
             if (!gameStarted[0]) {
                 instructionText.setText("");
@@ -123,16 +148,34 @@
             }
         }
 
+        /**
+         * This method will highlight possible moves for a pressed peg
+         * it calls each 6 directions needed and changes the image if they return true
+         *
+         * @param peg the peg that was pressed
+         * @param emptyView ImageView for if the peg is empty
+         * @param occupiedView ImageView for if the peg is occupied
+         * @param hoverView ImageView for if the peg is being hovered
+         */
         private void highlightPossibleMoves(Peg peg, ImageView emptyView, ImageView occupiedView, ImageView hoverView) {
             if (checkUpJump(peg)) {
                 board[peg.getI() - 2][peg.getK()].setGraphic(hoverView);
             }
         }
 
+        /**
+         * This method checks to see if the peg selected can jump the peg above it
+         * and to the right. with how I have the jagged array set up it's just straight up
+         *
+         * @param peg the peg that was pressed on
+         * @return true if the peg able to jump upwards to the right
+         */
         private boolean checkUpJump(Peg peg) {
-            if (peg.getI() + 2 < board.length && peg.getK() < board[peg.getI() + 2].length) { // bounds check
-                if (!board[peg.getI() + 2][peg.getK()].isOccupied()) {
-                    return true;
+            if (peg.getI() - 2 >= 0 && peg.getK() < board[peg.getI() - 2].length) { // bounds check for 2d array
+                if (board[peg.getI() - 1][peg.getK()].isOccupied()){ // if the space above is occupied
+                    if (!board[peg.getI() - 2][peg.getK()].isOccupied()) { // if the space 2 above is empty
+                        return true;
+                    }
                 }
             }
             return false;
