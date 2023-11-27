@@ -1,7 +1,5 @@
     /*
         TODO:
-            create all 6 directions inside of highlightMoves() & new methods for each
-            fix how the images are being handled (weird)
             possibly have a which turn variable..?
                 variable to tell whether you highlight a peg or remove it, not sure how
                     to handle this yet
@@ -161,19 +159,87 @@
             if (checkUpJump(peg)) {
                 board[peg.getI() - 2][peg.getK()].setGraphic(hoverView);
             }
+            if (checkUpLeftJump(peg)) {
+                board[peg.getI() - 2][peg.getK() - 2].setGraphic(hoverView);
+            }
+            if (checkDownJump(peg)) {
+                board[peg.getI() + 2][peg.getK()].setGraphic(hoverView);
+            }
+            if (checkDownRightJump(peg)) {
+                board[peg.getI() + 2][peg.getK() + 2].setGraphic(hoverView);
+            }
+            if (checkLeftJump(peg)) {
+                board[peg.getI()][peg.getK() - 2].setGraphic(hoverView);
+            }
+            if (checkRightJump(peg)) {
+                board[peg.getI()][peg.getK() + 2].setGraphic(hoverView);
+            }
         }
 
         /**
-         * This method checks to see if the peg selected can jump the peg above it
-         * and to the right. with how I have the jagged array set up it's just straight up
+         * These method checks to see if the peg selected can jump a peg from a
+         * certain direction
+         * first check is the boundaries
+         * second check is if it has a peg to jump
+         * third check is if the area that it would jump to is open
          *
          * @param peg the peg that was pressed on
-         * @return true if the peg able to jump upwards to the right
+         * @return true if the peg is able to jump the specified peg
          */
-        private boolean checkUpJump(Peg peg) {
-            if (peg.getI() - 2 >= 0 && peg.getK() < board[peg.getI() - 2].length) { // bounds check for 2d array
-                if (board[peg.getI() - 1][peg.getK()].isOccupied()){ // if the space above is occupied
-                    if (!board[peg.getI() - 2][peg.getK()].isOccupied()) { // if the space 2 above is empty
+        private boolean checkUpJump(Peg peg) { // up and to the right
+            if (peg.getI() - 2 >= 0 && peg.getK() < board[peg.getI() - 2].length) {
+                if (board[peg.getI() - 1][peg.getK()].isOccupied()){
+                    if (!board[peg.getI() - 2][peg.getK()].isOccupied()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private boolean checkUpLeftJump(Peg peg) { // up and to the left
+            if (peg.getI() - 2 >= 0 && peg.getK() - 2 > board[peg.getI() - 2].length) {
+                if(board[peg.getI() - 1][peg.getK() - 1].isOccupied()) {
+                    if (!board[peg.getI() - 2][peg.getK() - 2].isOccupied()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private boolean checkDownJump(Peg peg) { // down and to the left
+            if (peg.getI() + 2 < 5 && peg.getK() < board[peg.getI() + 2].length) {
+                if(board[peg.getI() + 1][peg.getK()].isOccupied()) {
+                    if (!board[peg.getI() + 2][peg.getK()].isOccupied()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private boolean checkDownRightJump(Peg peg) { // down and to the right
+            if (peg.getI() + 2 < 5 && peg.getK() + 2 < board[peg.getI() + 2].length) {
+                if (board[peg.getI() + 1][peg.getK() + 1].isOccupied()) {
+                    if (!board[peg.getI() + 2][peg.getK() + 2].isOccupied()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private boolean checkLeftJump(Peg peg) {
+            if (peg.getK() - 2 >= 0) {
+                if (board[peg.getI()][peg.getK() - 1].isOccupied()) {
+                    if (!board[peg.getI()][peg.getK() - 2].isOccupied()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private boolean checkRightJump(Peg peg) {
+            if (peg.getK() + 2 < 5) {
+                if (board[peg.getI()][peg.getK() + 1].isOccupied()) {
+                    if (!board[peg.getI()][peg.getK() + 2].isOccupied()) {
                         return true;
                     }
                 }
