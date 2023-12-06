@@ -1,9 +1,8 @@
     /*
         TODO:
-            possibly have a which turn variable..?
-                variable to tell whether you highlight a peg or remove it, not sure how
-                    to handle this yet
-                could be boolean or integer and use % 2
+            possibly having a count for the amount of pegs, can check win condition
+            possibly having a amtOfJumps() return the remaining amount of jumps
+                if returns 0, then end game with remaining pegs since no jumps are possible
      */
 
     package com.example.solitairepeggame;
@@ -29,6 +28,9 @@
         private final Peg[][] board = new Peg[5][];
 
         private final boolean[] gameStarted = {false};
+        private final boolean[] highlightedPeg = {false};
+
+        private final Peg[] clickedPeg = new Peg[1];
         private final Text instructionText = new Text("Choose Starting Peg");
 
         @Override
@@ -56,8 +58,8 @@
                     Image occupiedPeg = new Image("file:sprites/redButton.png");
                     ImageView occupiedView = createCircleImageView(occupiedPeg);
 
-                    Image hover = new Image("file:sprites/greenButton.png");
-                    ImageView hoverView = createCircleImageView(hover);
+                    Image hoverPeg = new Image("file:sprites/greenButton.png");
+                    ImageView hoverView = createCircleImageView(hoverPeg);
 
                     Image emptyPeg = new Image("file:sprites/greyButton.jpeg");
                     ImageView emptyView = createCircleImageView(emptyPeg);
@@ -76,6 +78,10 @@
                     peg.setOnMouseEntered(e -> {
                         if(peg.isOccupied()) {
                             peg.setGraphic(hoverView);
+                            System.out.println("full");
+                        }
+                        else {
+                            System.out.println("empty");
                         }
                     });
                     peg.setOnMouseExited(e -> {
@@ -86,7 +92,7 @@
 
                     // for playing of the game
                     peg.setOnAction(e -> {
-                        handlePegClick(peg, emptyView, occupiedView, hoverView);
+                        handlePegClick(peg, emptyPeg, occupiedPeg, hoverPeg);
                     });
                 }
 
@@ -102,7 +108,7 @@
         }
 
         /**
-         * This method is in charge of making the images into circles
+         * This method makes the images into circles
          *
          * @param image the image we want to make a circle
          * @return the circular image
@@ -126,22 +132,48 @@
          *      if it has been chosen, is highlights the moves, & TODO finish this
          *
          * @param peg the peg that was clicked
-         * @param emptyView ImageView for if the peg is empty
-         * @param occupiedView ImageView for if the peg is occupied
-         * @param hoverView ImageView for if the peg is being hovered
+         * @param emptyPeg Image for if the peg is empty
+         * @param occupiedPeg Image for if the peg is occupied
+         * @param hoverPeg Image for if the peg is being hovered
          */
-        private void handlePegClick(Peg peg, ImageView emptyView, ImageView occupiedView, ImageView hoverView) {
+        private void handlePegClick(Peg peg, Image emptyPeg, Image occupiedPeg, Image hoverPeg) {
             if (!gameStarted[0]) {
                 instructionText.setText("");
-                peg.setGraphic(emptyView);
+                peg.setGraphic(createCircleImageView(emptyPeg));
                 peg.setOccupied(false);
                 gameStarted[0] = true;
             }
             else { // play game
-                if (peg.isOccupied()) {
-                    highlightPossibleMoves(peg, emptyView, occupiedView, hoverView);
+                if (highlightedPeg[0]) {
+                    if (peg.isHighlight()) {
+                        System.out.println("true");
+
+                        // clicked peg
+                        peg.setGraphic(createCircleImageView(occupiedPeg));
+                        peg.setOccupied(true);
+
+                        // original peg
+                        clickedPeg[0].setGraphic(createCircleImageView(emptyPeg));
+                        clickedPeg[0].setOccupied(false);
+
+                        // jumped peg
+                        jumpPeg(peg, createCircleImageView(emptyPeg));
+
+                        highlightedPeg[0] = false;
+                    }
+                }
+                else {
+                    highlightPossibleMoves(peg, emptyPeg, occupiedPeg, hoverPeg);
+                    clickedPeg[0] = peg;
+                    peg.setGraphic(createCircleImageView(hoverPeg));
                 }
             }
+        }
+
+        private void jumpPeg(Peg peg, ImageView emptyView) {
+            Peg jumpedPeg = board[(peg.getI() + clickedPeg[0].getI()) / 2][(peg.getK() + clickedPeg[0].getK()) / 2];
+            jumpedPeg.setGraphic(emptyView);
+            jumpedPeg.setOccupied(false);
         }
 
         /**
@@ -149,28 +181,40 @@
          * it calls each 6 directions needed and changes the image if they return true
          *
          * @param peg the peg that was pressed
-         * @param emptyView ImageView for if the peg is empty
-         * @param occupiedView ImageView for if the peg is occupied
-         * @param hoverView ImageView for if the peg is being hovered
+         * @param emptyPeg Image for if the peg is empty
+         * @param occupiedPeg Image for if the peg is occupied
+         * @param hoverPeg Image for if the peg is being hovered
          */
-        private void highlightPossibleMoves(Peg peg, ImageView emptyView, ImageView occupiedView, ImageView hoverView) {
+        private void highlightPossibleMoves(Peg peg, Image emptyPeg, Image occupiedPeg, Image hoverPeg) {
             if (checkUpJump(peg)) {
-                board[peg.getI() - 2][peg.getK()].setGraphic(hoverView);
+                board[peg.getI() - 2][peg.getK()].setGraphic(createCircleImageView(hoverPeg));
+                board[peg.getI() - 2][peg.getK()].setHighlight(true);
+                highlightedPeg[0] = true;
             }
             if (checkUpLeftJump(peg)) {
-                board[peg.getI() - 2][peg.getK() - 2].setGraphic(hoverView);
+                board[peg.getI() - 2][peg.getK() - 2].setGraphic(createCircleImageView(hoverPeg));
+                board[peg.getI() - 2][peg.getK() - 2].setHighlight(true);
+                highlightedPeg[0] = true;
             }
             if (checkDownJump(peg)) {
-                board[peg.getI() + 2][peg.getK()].setGraphic(hoverView);
+                board[peg.getI() + 2][peg.getK()].setGraphic(createCircleImageView(hoverPeg));
+                board[peg.getI() + 2][peg.getK()].setHighlight(true);
+                highlightedPeg[0] = true;
             }
             if (checkDownRightJump(peg)) {
-                board[peg.getI() + 2][peg.getK() + 2].setGraphic(hoverView);
+                board[peg.getI() + 2][peg.getK() + 2].setGraphic(createCircleImageView(hoverPeg));
+                board[peg.getI() + 2][peg.getK() + 2].setHighlight(true);
+                highlightedPeg[0] = true;
             }
             if (checkLeftJump(peg)) {
-                board[peg.getI()][peg.getK() - 2].setGraphic(hoverView);
+                board[peg.getI()][peg.getK() - 2].setGraphic(createCircleImageView(hoverPeg));
+                board[peg.getI()][peg.getK() - 2].setHighlight(true);
+                highlightedPeg[0] = true;
             }
             if (checkRightJump(peg)) {
-                board[peg.getI()][peg.getK() + 2].setGraphic(hoverView);
+                board[peg.getI()][peg.getK() + 2].setGraphic(createCircleImageView(hoverPeg));
+                board[peg.getI()][peg.getK() + 2].setHighlight(true);
+                highlightedPeg[0] = true;
             }
         }
 

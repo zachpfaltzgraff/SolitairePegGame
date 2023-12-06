@@ -7,6 +7,8 @@ public class Peg extends Button {
     private int k;
     private boolean occupied;
 
+    private boolean highlight;
+
     public Peg() {
         super();
     }
@@ -39,5 +41,13 @@ public class Peg extends Button {
 
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
+    }
+
+    public boolean isHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
     }
 }
