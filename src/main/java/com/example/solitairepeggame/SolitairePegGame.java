@@ -1,8 +1,12 @@
     /*
         TODO:
-            possibly having a count for the amount of pegs, can check win condition
             possibly having a amtOfJumps() return the remaining amount of jumps
                 if returns 0, then end game with remaining pegs since no jumps are possible
+                have it return after each "turn" / peg click
+            possibly add where if you click the highlighted peg, it unhighlights them
+            in showWin have two buttons, one to close the program, and one to restart the game,
+            create images for both of these to make it look good
+
      */
 
     package com.example.solitairepeggame;
@@ -10,11 +14,13 @@
     import javafx.application.Application;
     import javafx.geometry.Pos;
     import javafx.scene.Scene;
+    import javafx.scene.control.Alert;
+    import javafx.scene.control.Label;
+    import javafx.scene.effect.DropShadow;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
-    import javafx.scene.layout.GridPane;
-    import javafx.scene.layout.HBox;
-    import javafx.scene.layout.VBox;
+    import javafx.scene.layout.*;
+    import javafx.scene.paint.Color;
     import javafx.scene.shape.Circle;
     import javafx.scene.text.Font;
     import javafx.scene.text.FontWeight;
@@ -31,6 +37,7 @@
         private final boolean[] highlightedPeg = {false};
 
         private final Peg[] clickedPeg = new Peg[1];
+        private final int[] count = {0};
         private final Text instructionText = new Text("Choose Starting Peg");
 
         @Override
@@ -65,6 +72,7 @@
                     ImageView emptyView = createCircleImageView(emptyPeg);
 
                     Peg peg = new Peg(i, k);
+                    count[0]++;
                     peg.setGraphic(occupiedView);
                     peg.setBackground(null);
                     peg.setShape(new Circle(50));
@@ -76,16 +84,12 @@
 
                     // for hovering
                     peg.setOnMouseEntered(e -> {
-                        if(peg.isOccupied()) {
+                        if(peg.isOccupied() && !highlightedPeg[0]) {
                             peg.setGraphic(hoverView);
-                            System.out.println("full");
-                        }
-                        else {
-                            System.out.println("empty");
                         }
                     });
                     peg.setOnMouseExited(e -> {
-                        if(peg.isOccupied()) {
+                        if(peg.isOccupied() && !highlightedPeg[0]) {
                             peg.setGraphic(occupiedView);
                         }
                     });
@@ -142,12 +146,11 @@
                 peg.setGraphic(createCircleImageView(emptyPeg));
                 peg.setOccupied(false);
                 gameStarted[0] = true;
+                count[0]--;
             }
             else { // play game
                 if (highlightedPeg[0]) {
                     if (peg.isHighlight()) {
-                        System.out.println("true");
-
                         // clicked peg
                         peg.setGraphic(createCircleImageView(occupiedPeg));
                         peg.setOccupied(true);
@@ -170,10 +173,45 @@
             }
         }
 
+        /**
+         * This method removes the peg that was jumped and sets its graphic to empty
+         * as well as sets the occupied variable to false
+         *
+         * @param peg the original peg that was clicked
+         * @param emptyView the empty image for the pegs graphic
+         */
         private void jumpPeg(Peg peg, ImageView emptyView) {
             Peg jumpedPeg = board[(peg.getI() + clickedPeg[0].getI()) / 2][(peg.getK() + clickedPeg[0].getK()) / 2];
             jumpedPeg.setGraphic(emptyView);
             jumpedPeg.setOccupied(false);
+
+            count[0]--;
+            if (count[0] == 1) {
+                showWin();
+            }
+        }
+
+        private void showWin() {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("");
+
+            Label contentLabel = new Label("Congratulations! You won!");
+            Font customFont = Font.font("Fredo", 32);
+            contentLabel.setTextFill(Color.WHITE);
+            contentLabel.setFont(customFont);
+            DropShadow dropShadow = new DropShadow(10, Color.BLACK);
+            contentLabel.setEffect(dropShadow);
+            alert.setGraphic(contentLabel);
+
+            BackgroundFill backgroundFill = new BackgroundFill(Color.BROWN, null, null);
+            Background background = new Background(backgroundFill);
+            alert.getDialogPane().setBackground(background);
+
+            alert.getDialogPane().setMaxWidth(500);
+            alert.getDialogPane().setMaxHeight(200);
+
+            alert.showAndWait();
         }
 
         /**
@@ -269,7 +307,7 @@
             return false;
         }
         private boolean checkLeftJump(Peg peg) {
-            if (peg.getK() - 2 >= board[peg.getI()].length) {
+            if (peg.getK() - 2 >= 0) {
                 if (board[peg.getI()][peg.getK() - 1].isOccupied()) {
                     if (!board[peg.getI()][peg.getK() - 2].isOccupied()) {
                         return true;
