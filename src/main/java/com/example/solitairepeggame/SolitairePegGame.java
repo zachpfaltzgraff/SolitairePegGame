@@ -4,17 +4,16 @@
                 if returns 0, then end game with remaining pegs since no jumps are possible
                 have it return after each "turn" / peg click
             possibly add where if you click the highlighted peg, it unhighlights them
-            in showWin have two buttons, one to close the program, and one to restart the game,
-            create images for both of these to make it look good
-
      */
 
     package com.example.solitairepeggame;
 
     import javafx.application.Application;
+    import javafx.application.Platform;
     import javafx.geometry.Pos;
     import javafx.scene.Scene;
     import javafx.scene.control.Alert;
+    import javafx.scene.control.ButtonType;
     import javafx.scene.control.Label;
     import javafx.scene.effect.DropShadow;
     import javafx.scene.image.Image;
@@ -42,6 +41,16 @@
 
         @Override
         public void start(Stage stage) throws IOException {
+            createGame();
+        }
+
+        /**
+         * This method is in charge of creating everything related to the game
+         * it created a grid for the buttons, as well as a vbox to hold everything in
+         * it sets up all 15 buttons and handles the clicks and hovers for all of them
+         */
+        private void createGame() {
+            Stage stage = new Stage();
             GridPane grid = new GridPane();
             grid.setAlignment(Pos.CENTER);
 
@@ -110,7 +119,6 @@
             stage.setScene(scene);
             stage.show();
         }
-
         /**
          * This method makes the images into circles
          *
@@ -191,6 +199,11 @@
             }
         }
 
+        /**
+         * This method creates an alert for when the user wins (is left with one peg)
+         * and it also has buttons that prompt the user to either close the program or
+         * restart and play again
+         */
         private void showWin() {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("");
@@ -208,10 +221,26 @@
             Background background = new Background(backgroundFill);
             alert.getDialogPane().setBackground(background);
 
-            alert.getDialogPane().setMaxWidth(500);
-            alert.getDialogPane().setMaxHeight(200);
+            alert.getDialogPane().setMinSize(400, 110);
+            alert.getDialogPane().setMaxSize(400, 110);
 
-            alert.showAndWait();
+            ButtonType restartButtonType = new ButtonType("Restart");
+            ButtonType closeButtonType = new ButtonType("Close");
+            alert.getButtonTypes().setAll(restartButtonType, closeButtonType);
+
+            alert.showAndWait().ifPresent(buttonType -> {
+                if (buttonType == restartButtonType) {
+                    alert.close();
+
+                    // reset variables after each game
+                    count[0] = 0;
+                    gameStarted[0] = false;
+                    instructionText.setText("Choose Starting Peg");
+                    createGame();
+                } else if (buttonType == closeButtonType) {
+                    Platform.exit();
+                }
+            });
         }
 
         /**
