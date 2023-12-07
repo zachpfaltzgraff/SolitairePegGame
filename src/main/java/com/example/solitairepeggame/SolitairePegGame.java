@@ -37,10 +37,12 @@
 
         private final Peg[] clickedPeg = new Peg[1];
         private final int[] count = {0};
+        private Stage primaryStage;
         private final Text instructionText = new Text("Choose Starting Peg");
 
         @Override
         public void start(Stage stage) throws IOException {
+            primaryStage = stage;
             createGame();
         }
 
@@ -50,7 +52,6 @@
          * it sets up all 15 buttons and handles the clicks and hovers for all of them
          */
         private void createGame() {
-            Stage stage = new Stage();
             GridPane grid = new GridPane();
             grid.setAlignment(Pos.CENTER);
 
@@ -115,9 +116,9 @@
             vbox.getChildren().add(grid);
 
             Scene scene = new Scene(vbox, 800, 600);
-            stage.setTitle("Solitaire Peg Game");
-            stage.setScene(scene);
-            stage.show();
+            primaryStage.setTitle("Solitaire Peg Game");
+            primaryStage.setScene(scene);
+            primaryStage.show();
         }
         /**
          * This method makes the images into circles
