@@ -70,6 +70,8 @@ public class SolitairePegGame extends Application {
                 ImageView hoverView = createCircleImageView(hoverPeg);
 
                 Image emptyPeg = new Image("file:sprites/emptyImage.png");
+                ImageView emptyView = createCircleImageView(emptyPeg);
+
                 Image selectedPeg = new Image("file:sprites/selectedPeg.png");
                 Image highlightPeg = new Image("file:sprites/highlightedPeg.png");
 
@@ -89,9 +91,12 @@ public class SolitairePegGame extends Application {
                     if(peg.isOccupied() && !highlightedPeg[0]) {
                         peg.setGraphic(hoverView);
                     }
+                    if (!gameStarted[0]) {
+                        peg.setGraphic(emptyView);
+                    }
                 });
                 peg.setOnMouseExited(e -> {
-                    if(peg.isOccupied() && !highlightedPeg[0]) {
+                    if(peg.isOccupied() && !highlightedPeg[0] || !gameStarted[0]) {
                         peg.setGraphic(occupiedView);
                     }
                 });
