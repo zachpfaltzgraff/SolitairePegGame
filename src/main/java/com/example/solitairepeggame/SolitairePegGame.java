@@ -112,6 +112,10 @@
 
             vbox.getChildren().add(grid);
 
+            BackgroundFill backgroundFill = new BackgroundFill(Color.BROWN, null, null);
+            Background background = new Background(backgroundFill);
+            vbox.setBackground(background);
+
             Scene scene = new Scene(vbox, 800, 600);
             primaryStage.setTitle("Solitaire Peg Game");
             primaryStage.setScene(scene);
@@ -179,7 +183,7 @@
                     }
                 }
             }
-            if (!checkPossibleMoves()) {
+            if (!checkPossibleMoves() && gameStarted[0]) {
                 showEnd(false);
             }
         }
