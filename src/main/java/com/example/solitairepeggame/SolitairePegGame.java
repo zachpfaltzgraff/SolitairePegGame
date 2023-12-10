@@ -139,13 +139,19 @@ public class SolitairePegGame extends Application {
     /**
      * This method handles the peg click, it has an if else statement that decides
      * if the game has started or not depending on if the user has chosen a starting peg
-     *      if it hasn't been chosen, you make the peg occupied unoccupied
-     *      if it has been chosen, is highlights the moves, & TODO finish this
+     *      if it hasn't been chosen, you make the peg unoccupied
+     *      if it has been chosen, the game started
+     *          once the game is started a user can highlight a peg, it will only highlight if
+     *          it is able to make a jump
+     *          you can also unselect the highlighted peg to change your mind
+     *          once you jump a peg, you can select another peg to jump and repeat until done
      *
      * @param peg the peg that was clicked
      * @param emptyPeg Image for if the peg is empty
      * @param occupiedPeg Image for if the peg is occupied
      * @param hoverPeg Image for if the peg is being hovered
+     * @param selectedPeg Image for if the peg is selected
+     * @param highlightPeg Image for if the peg is highlighted
      */
     private void handlePegClick(Peg peg, Image emptyPeg, Image occupiedPeg,
                                 Image hoverPeg, Image selectedPeg, Image highlightPeg) {
@@ -183,7 +189,7 @@ public class SolitairePegGame extends Application {
             }
             else {
                 if (peg.isOccupied()) {
-                    if (highlightPossibleMoves(peg, hoverPeg, highlightPeg)) {
+                    if (highlightPossibleMoves(peg, highlightPeg)) {
                         peg.setGraphic(createCircleImageView(selectedPeg));
                     }
                     clickedPeg[0] = peg;
@@ -195,6 +201,12 @@ public class SolitairePegGame extends Application {
         }
     }
 
+    /**
+     * This simple method is used after each run through
+     * it checks for any left over highlighted pegs and changes them back to normal
+     * useful for if there are multiple moves that you can do that were highlighted
+     * @param emptyPeg the empty peg view
+     */
     private void unhighlightPeg(Image emptyPeg) {
         for (int i = 0; i < 5; i++) {
             for (int k = 0; k < i + 1; k++) {
@@ -225,8 +237,9 @@ public class SolitairePegGame extends Application {
     }
 
     /**
-     * This method creates an alert for when the user wins (is left with one peg)
-     * and it also has buttons that prompt the user to either close the program or
+     * This method creates an alert for when the game is over
+     *      either by winning or losing (changes the text
+     * it prompts the user with buttons that prompt the user to either close the program or
      * restart and play again
      */
     private void showEnd(boolean win) {
@@ -282,9 +295,8 @@ public class SolitairePegGame extends Application {
      *
      * @param peg the peg that was pressed
      * @param highlightPeg Image for if the peg is highlighted
-     * @param hoverPeg Image for if the peg is being hovered
      */
-    private boolean highlightPossibleMoves(Peg peg, Image hoverPeg, Image highlightPeg) {
+    private boolean highlightPossibleMoves(Peg peg, Image highlightPeg) {
         if (checkUpJump(peg)) {
             board[peg.getI() - 2][peg.getK()].setGraphic(createCircleImageView(highlightPeg));
             board[peg.getI() - 2][peg.getK()].setHighlight(true);
