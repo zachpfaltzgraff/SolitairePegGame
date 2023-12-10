@@ -1,8 +1,5 @@
     /*
         TODO:
-            possibly having a amtOfJumps() return the remaining amount of jumps
-                if returns 0, then end game with remaining pegs since no jumps are possible
-                have it return after each "turn" / peg click
             possibly add where if you click the highlighted peg, it unhighlights them
      */
 
@@ -175,10 +172,15 @@
                     }
                 }
                 else {
-                    highlightPossibleMoves(peg, emptyPeg, occupiedPeg, hoverPeg);
-                    clickedPeg[0] = peg;
-                    peg.setGraphic(createCircleImageView(hoverPeg));
+                    if (peg.isOccupied()) {
+                        highlightPossibleMoves(peg, emptyPeg, occupiedPeg, hoverPeg);
+                        clickedPeg[0] = peg;
+                        peg.setGraphic(createCircleImageView(hoverPeg));
+                    }
                 }
+            }
+            if (!checkPossibleMoves()) {
+                showEnd(false);
             }
         }
 
@@ -196,7 +198,7 @@
 
             count[0]--;
             if (count[0] == 1) {
-                showWin();
+                showEnd(true);
             }
         }
 
@@ -205,12 +207,18 @@
          * and it also has buttons that prompt the user to either close the program or
          * restart and play again
          */
-        private void showWin() {
+        private void showEnd(boolean win) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("");
             alert.setHeaderText("");
 
-            Label contentLabel = new Label("Congratulations! You won!");
+            Label contentLabel = new Label("");
+            if (win) {
+                contentLabel.setText("Congratulations! You won!");
+            }
+            else {
+                contentLabel.setText("No Possible Moves :(");
+            }
             Font customFont = Font.font("Fredo", 32);
             contentLabel.setTextFill(Color.WHITE);
             contentLabel.setFont(customFont);
@@ -237,8 +245,10 @@
                     count[0] = 0;
                     gameStarted[0] = false;
                     instructionText.setText("Choose Starting Peg");
+
                     createGame();
-                } else if (buttonType == closeButtonType) {
+                }
+                else if (buttonType == closeButtonType) {
                     Platform.exit();
                 }
             });
@@ -287,7 +297,28 @@
         }
 
         /**
-         * These method checks to see if the peg selected can jump a peg from a
+         * This method checks to see if there is a move that is remaining
+         * if there is a remaining move, possibleMove will turn true and be returned
+         * if there isn't a remaining move, it will return false
+         * @return true if there is a remaining possible move
+         */
+        private boolean checkPossibleMoves() {
+            for (int i = 0; i < 5; i++) {
+                for (int k = 0; k < i + 1; k++) {
+                    if (board[i][k].isOccupied()) {
+                        if (checkUpJump(board[i][k]) || checkUpLeftJump(board[i][k])
+                        || checkDownJump(board[i][k]) || checkDownRightJump(board[i][k])
+                        || checkLeftJump(board[i][k]) || checkRightJump(board[i][k])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * These methods check to see if the peg selected can jump a peg from a
          * certain direction
          * first check is the boundaries
          * second check is if it has a peg to jump
