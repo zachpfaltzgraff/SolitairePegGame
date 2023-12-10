@@ -70,8 +70,6 @@ public class SolitairePegGame extends Application {
                 ImageView hoverView = createCircleImageView(hoverPeg);
 
                 Image emptyPeg = new Image("file:sprites/emptyImage.png");
-                ImageView emptyView = createCircleImageView(emptyPeg);
-
                 Image selectedPeg = new Image("file:sprites/selectedPeg.png");
                 Image highlightPeg = new Image("file:sprites/highlightedPeg.png");
 
@@ -100,7 +98,7 @@ public class SolitairePegGame extends Application {
 
                 // for playing of the game
                 peg.setOnAction(e -> {
-                    handlePegClick(peg, emptyPeg, occupiedPeg, hoverPeg, selectedPeg, highlightPeg);
+                    handlePegClick(peg, emptyPeg, occupiedPeg, selectedPeg, highlightPeg);
                 });
             }
 
@@ -149,12 +147,10 @@ public class SolitairePegGame extends Application {
      * @param peg the peg that was clicked
      * @param emptyPeg Image for if the peg is empty
      * @param occupiedPeg Image for if the peg is occupied
-     * @param hoverPeg Image for if the peg is being hovered
      * @param selectedPeg Image for if the peg is selected
      * @param highlightPeg Image for if the peg is highlighted
      */
-    private void handlePegClick(Peg peg, Image emptyPeg, Image occupiedPeg,
-                                Image hoverPeg, Image selectedPeg, Image highlightPeg) {
+    private void handlePegClick(Peg peg, Image emptyPeg, Image occupiedPeg, Image selectedPeg, Image highlightPeg) {
         if (!gameStarted[0]) {
             instructionText.setText("");
             peg.setGraphic(createCircleImageView(emptyPeg));
