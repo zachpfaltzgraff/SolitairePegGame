@@ -26,4 +26,9 @@ Download the Community Edition, it's free.
 6) In the top right, click the run button
 7) Have fun!!
 
-Note: Sorry I did not make this a .exe file, I'm sure I will some day but for right now this'll do
+About the project
+------------------
+This was my first ever attempt at creating a game insided of javaFX, I did this to gain more knowledge on it as well as have fun.
+I have wanted to create this peg game on my computer for a long time as there aren't very many online versions that were great.
+
+Sorry I did not make this a .exe file, I'm sure I will some day but for right now this'll do.
