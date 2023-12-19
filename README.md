@@ -11,12 +11,19 @@ The game starts with all the holes on the board filled with a peg except the hol
 Winning the game.
 -----------------
 The game is won when all of the pegs are removed except one.
+
 More: http://www.ehow.com/list_6181682_peg-solitaire-rules.html
 
 How to download
 ---------------
-I used Intellij to create this project and that's what I recommend you do as well. If you have another way to run it do that.
+I used Intellij to create this project and that's what I recommend you do as well. If you have another way to run it be my guest.
 1) Intellij Download: https://www.jetbrains.com/idea/download/?section=windows
 Download the Community Edition, it's free.
-2) Once you have intellij installed, download this off of github
-3) 
+2) Once you have intellij installed, download the zip file of this project
+3) Unzip the file and open Intellij
+4) Inside Intellij, click on open and select the unzipped file
+5) Inside the project, in the top left select the folder icon, then expand with SolitairePegGame-master > src > main > java > com.example.solitairepeggame > SolitairePegGame
+6) In the top right, click the run button
+7) Have fun!!
+
+Note: Sorry I did not make this a .exe file, I'm sure I will some day but for right now this'll do
