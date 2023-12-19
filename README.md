@@ -26,6 +26,17 @@ Download the Community Edition, it's free.
 6) In the top right, click the run button
 7) Have fun!!
 
+Game Screenshots
+----------------
+<div align="center">
+    <img src="PegGameScreenshot1.png" width="400px"</img> 
+</div>
+<div align="center">
+    <img src="PegGameScreenshot2.png" width="400px"</img> 
+    <img src="PegGameScreenshot3.png" width="400px"</img> 
+</div>
+
+
 About the project
 ------------------
 This was my first ever attempt at creating a game insided of javaFX, I did this to gain more knowledge on it as well as have fun.
